@@ -1,0 +1,78 @@
+<html>
+<meta charset="utf-8">
+
+<body>
+    <canvas id="tela" width='600' height='400'></canvas>
+</body>
+<script>
+    var tela = document.getElementById('tela');
+    var canvas = tela.getContext("2d"); //define a dimensão da imagem
+    var alvox;
+    var alvoy;
+    var cliqueX;
+    var cliqueY;
+    var acerto = false;
+    var raio = 40;
+    var desenhaImagem = function() {
+        var imagem = new Image();
+        imagem.src = "http://cdn.naosalvo.com.br/2016/01/acerto.jpg";
+        canvas.drawImage(imagem, 0, 0);
+    }
+    var cor = function(cor) {
+        canvas.fillStyle = cor;
+    }
+    var desenhaTela = function() {
+        canvas.fillStyle = 'gray';
+        canvas.fillRect(0, 0, 600, 400);
+    }
+    var circulo = function(x, y, raio) {
+        canvas.beginPath();
+        canvas.arc(x, y, raio, 0, 2 * Math.PI);
+        canvas.fill();
+    }
+    var desenhaAlvo = function(x, y) {
+        cor('white');
+        circulo(x, y, raio);
+        cor('red');
+        circulo(x, y, raio - 10);
+        cor('white');
+        circulo(x, y, raio - 20);
+        cor('red');
+        circulo(x, y, raio - 30);
+    }
+    var limpaTela = function() {
+        canvas.clearRect(0, 0, 600, 400);
+    }
+    var sorteia = function(valorMax) {
+        return Math.floor(Math.random() * valorMax);
+    }
+    var desenha = function() {
+        limpaTela();
+        desenhaTela();
+        if (acerto) {
+            alert("Acerto mizeravi!");
+            desenhaImagem();
+            clearInterval(intervalo);
+            return;
+        }
+        alvox = sorteia(600);
+        alvoy = sorteia(400);
+        desenhaAlvo(alvox, alvoy);
+    }
+    tela.onclick = function(evento) {
+        cliqueX = evento.pageX - tela.offsetLeft; // a função page x retorna a posição do clique no eixo x e a função tela.offsetLeft desconta a margem lateral
+        cliqueY = evento.pageY - tela.offsetTop; // o mesmo so que no eixo
+        if ((alvox >= cliqueX - 40 ) && (alvoy >= cliqueY-40)) {
+            if ((alvox <= cliqueX + 40 ) && (alvoy <= cliqueY+40)) {
+                acerto = true;
+            }
+        }
+        canvas.fillStyle = 'blue';
+        canvas.beginPath();
+        canvas.arc(cliqueX, cliqueY, 5, 0, 2 * 3.14);
+        canvas.fill();
+    }
+    var intervalo = setInterval(desenha, 1000);
+</script>
+
+</html>
